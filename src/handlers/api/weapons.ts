@@ -1,0 +1,32 @@
+import express from "express";
+import {MythicalWeapon, MythicalWeaponStore} from "../../models/mythical_weapons";
+
+const store = new MythicalWeaponStore();
+
+export default express
+    .Router()
+    .get("/", async (req: express.Request, res: express.Response) => {
+        const weapons = await store.index();
+        res.json(weapons);
+    })
+    .get("/:id", async (req: express.Request, res: express.Response) => {
+        const id = parseInt(req.params.id);
+        const weapon = await store.find(id);
+        res.json(weapon);
+    })
+    .delete("/:id", async (req: express.Request, res: express.Response) => {
+        const id = parseInt(req.params.id);
+        const weapon = await store.deleteById(id);
+        res.json(weapon);
+    })
+    .put("/:id", async (req: express.Request, res: express.Response) => {
+        const body = req.body as MythicalWeapon;
+        const id = parseInt(req.params.id);
+        const weapon = await store.update(id, body.type, body.name, body.weight);
+        res.json(weapon);
+    })
+    .post("/", async (req: express.Request, res: express.Response) => {
+        const body = req.body as MythicalWeapon;
+        const weapon = await store.create(body.name, body.type, body.weight);
+        res.json(weapon);
+    });

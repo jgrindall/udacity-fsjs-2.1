@@ -1,6 +1,7 @@
 import client from "../database";
 import bcrypt from "bcrypt";
 import {Book} from "./book";
+import {MythicalWeapon} from "./mythical_weapons";
 
 export type Users = {
     id: number;
@@ -28,6 +29,32 @@ export class UsersStore{
         }
         catch (err) {
             throw new Error(`Could not get users. Error: ${err}`)
+        }
+    }
+
+    async find(id:number):Promise<Users>{
+        try{
+            const connection = await client.connect();
+            const sql = 'select * from users where id=$1';
+            const result = await connection.query(sql, [id]);
+            await connection.release();
+            return result.rows[0];
+        }
+        catch(e){
+            throw new Error("get user error " + e.message);
+        }
+    }
+
+    async delete(id:number):Promise<Users>{
+        try{
+            const connection = await client.connect();
+            const sql = 'delete from users where id=$1 returning *';
+            const result = await connection.query(sql, [id]);
+            await connection.release();
+            return result.rows[0];
+        }
+        catch(e){
+            throw new Error("del user error " + e.message);
         }
     }
 

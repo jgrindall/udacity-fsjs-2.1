@@ -3,6 +3,8 @@ const store = new UsersStore();
 
 describe("Test users store", ()=>{
 
+    let idCreated:number;
+
     it("index works", async ()=>{
         const users:Users[] = await store.index();
         expect(users).toBeTruthy();
@@ -14,6 +16,7 @@ describe("Test users store", ()=>{
         expect(user).toBeTruthy();
         expect(user.username).toEqual("jgrindall");
         expect(user.password_digest).not.toEqual("Mountain101");
+        idCreated = user.id;
     });
 
     it("auth works - success", async ()=>{
@@ -33,5 +36,12 @@ describe("Test users store", ()=>{
         expect(user).toEqual(null);
     });
 
+    it("del works", async ()=>{
+        const user = await store.delete(idCreated);
+        expect(user).toBeTruthy();
+        const users:Users[] = await store.index();
+        expect(users).toBeTruthy();
+        expect(users).toEqual([]);
+    });
 
 });
