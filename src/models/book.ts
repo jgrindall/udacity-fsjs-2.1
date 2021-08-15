@@ -1,7 +1,7 @@
 import client from "../database";
 
 export type Book = {
-    id: number;
+    id?: number;
     title: string;
     author: string;
     total_pages: number;
@@ -13,9 +13,8 @@ export class BookStore{
     }
     async index(): Promise<Book[]> {
         try {
-            // @ts-ignore
-            const connection = await Client.connect();
-            const sql = 'SELECT * FROM books';
+            const connection = await client.connect();
+            const sql = 'select * from books';
             const result = await connection.query(sql);
             connection.release();
             return result.rows;
@@ -25,11 +24,10 @@ export class BookStore{
         }
     }
 
-    async show(id: string): Promise<Book> {
+    async show(id: number): Promise<Book> {
         try {
-            const sql = 'SELECT * FROM books WHERE id=($1)';
-            // @ts-ignore
-            const connection = await Client.connect();
+            const sql = 'select * from books where id=($1)';
+            const connection = await client.connect();
             const result = await connection.query(sql, [id]);
             connection.release();
             return result.rows[0];
@@ -41,9 +39,8 @@ export class BookStore{
 
     async create(b: Book): Promise<Book> {
         try {
-            const sql = 'INSERT INTO books (title, author, total_pages, summary) VALUES($1, $2, $3, $4) RETURNING *';
-            // @ts-ignore
-            const connection = await Client.connect();
+            const sql = 'insert into books (title, author, total_pages, summary) values($1, $2, $3, $4) returning *';
+            const connection = await client.connect();
             const result = await connection.query(sql, [b.title, b.author, b.total_pages, b.summary]);
             const book = result.rows[0];
             connection.release();
@@ -54,11 +51,10 @@ export class BookStore{
         }
     }
 
-    async delete(id: string): Promise<Book> {
+    async delete(id: number): Promise<Book> {
         try {
-            const sql = 'DELETE FROM books WHERE id=($1)';
-            // @ts-ignore
-            const connection = await Client.connect();
+            const sql = 'delete from books WHERE id=$1 returning *';
+            const connection = await client.connect();
             const result = await connection.query(sql, [id]);
             const book = result.rows[0];
             connection.release();

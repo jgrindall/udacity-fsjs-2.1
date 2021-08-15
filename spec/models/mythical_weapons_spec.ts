@@ -1,7 +1,7 @@
 import {MythicalWeapon, MythicalWeaponStore} from "../../src/models/mythical_weapons";
 const store = new MythicalWeaponStore();
 
-describe("Test store", ()=>{
+describe("Test weapons store", ()=>{
 
     let idCreated: number;
 
@@ -18,13 +18,21 @@ describe("Test store", ()=>{
         expect(result.name).toEqual("mjolnir");
         expect(result.type).toEqual("hammer");
         expect(result.weight).toEqual(1000);
-        
+
         const weapons:MythicalWeapon[] = await store.index();
         expect(weapons).toBeTruthy();
         expect(weapons.length).toEqual(1);
         expect(weapons[0].name).toEqual("mjolnir");
         expect(weapons[0].weight).toEqual(1000);
         idCreated = weapons[0].id;
+    });
+
+    it("find works", async ()=>{
+        const result:MythicalWeapon = await store.find(idCreated);
+        expect(result).toBeTruthy();
+        expect(result.name).toEqual("mjolnir");
+        expect(result.type).toEqual("hammer");
+        expect(result.weight).toEqual(1000);
     });
 
     it("update works", async ()=>{
