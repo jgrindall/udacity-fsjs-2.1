@@ -1,7 +1,5 @@
 import client from "../database";
 import bcrypt from "bcrypt";
-import {Book} from "./book";
-import {MythicalWeapon} from "./mythical_weapons";
 
 export type Users = {
     id: number;
@@ -9,11 +7,8 @@ export type Users = {
     password_digest: string;
 }
 
-const {
-    BCRYPT_PASSWORD,
-    SALT_ROUNDS
-} = process.env;
-
+const BCRYPT_PASSWORD:string = process.env.BCRYPT_PASSWORD as string;
+const SALT_ROUNDS:string = process.env.SALT_ROUNDS as string;
 
 export class UsersStore{
     constructor() {
@@ -68,7 +63,8 @@ export class UsersStore{
             const connection = await client.connect();
             const result = await connection.query(sql, [username, hash]);
             await connection.release();
-            return result.rows[0];
+            const user = result.rows[0];
+            return user;
         }
         catch (err) {
             throw new Error(`Could not add new user. Error: ${err}`)

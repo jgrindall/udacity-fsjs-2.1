@@ -20,8 +20,10 @@ describe("Test endpoint success", async () => {
             name:"Excalibur",
             weight:100
         };
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImpncmluZGFsbCIsInBhc3N3b3JkX2RpZ2VzdCI6IiQyYiQxMCRQVXhzTXJXRi43WGxWUzcvVlZveHoudTVUbGpNVUhXb05jQmNsUmhWa2QvQXR2UkdNQXEvbSJ9LCJpYXQiOjE2MjkwNDI5OTl9.GRcodSDEG9hIXLjt3ssa6AE4oEZ56Uyyqz6PQi8nJUw";
         const response = await request
             .post("/api/mythical_weapons")
+            .set('Authorization', 'Bearer ' + token)
             .send(sword);
         expect(response.status).toBe(200);
         const sword2:MythicalWeapon = (response.body as MythicalWeapon);
@@ -36,6 +38,34 @@ describe("Test endpoint success", async () => {
         expect(weapons).toBeTruthy();
         expect(weapons.length).toEqual(1);
         expect(weapons[0].name).toEqual("Excalibur");
+    });
+
+    it("test create fail (wrong token)", async () => {
+        const sword = {
+            type:"sword",
+            name:"Excalibur",
+            weight:100
+        };
+        const token = "not a token";
+        const response = await request
+            .post("/api/mythical_weapons")
+            .set('Authorization', 'Bearer ' + token)
+            .send(sword);
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual(null);
+    });
+
+    it("test create fail (no header)", async () => {
+        const sword = {
+            type:"sword",
+            name:"Excalibur",
+            weight:100
+        };
+        const response = await request
+            .post("/api/mythical_weapons")
+            .send(sword);
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual(null);
     });
 
     it("test get by id", async () => {
