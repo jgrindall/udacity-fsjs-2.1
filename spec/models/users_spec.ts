@@ -19,7 +19,7 @@ describe("Test users store", ()=>{
         expect(users).toEqual([]);
     });
 
-    xit("create works", async ()=>{
+    it("create works", async ()=>{
         const user:Users = await store.create("jgrindall", "Mountain101");
         expect(user).toBeTruthy();
         expect(user.username).toEqual("jgrindall");
@@ -27,24 +27,24 @@ describe("Test users store", ()=>{
         idCreated = user.id;
     });
 
-    xit("auth works - success", async ()=>{
+    it("auth works - success", async ()=>{
         const user = await store.authenticate("jgrindall", "Mountain101");
         expect(user).toBeTruthy();
         expect(user as Users).toBeTruthy();
         expect((user as Users).username).toEqual("jgrindall");
     });
 
-    xit("auth works - fail", async ()=>{
+    it("auth works - fail", async ()=>{
         const user = await store.authenticate("jgrindall", "Mountain");
         expect(user).toEqual(null);
     });
 
-    xit("auth works - fail missing user", async ()=>{
+    it("auth works - fail missing user", async ()=>{
         const user = await store.authenticate("jg", "Mountain101");
         expect(user).toEqual(null);
     });
 
-    xit("del works", async ()=>{
+    it("del works", async ()=>{
         const user = await store.delete(idCreated);
         expect(user).toBeTruthy();
         const users:Users[] = await store.index();
@@ -52,7 +52,7 @@ describe("Test users store", ()=>{
         expect(users).toEqual([]);
     });
 
-    xit("del all works", async ()=>{
+    it("del all works", async ()=>{
 
         const user:Users = await store.create("jgrindall", "Mountain101");
         expect(user).toBeTruthy();

@@ -22,7 +22,6 @@ describe("Test orders store", ()=>{
 
     it("create a user", async()=>{
         const user:Users = await userStore.create("jgrindall", "Mountain101");
-        console.log(user);
         expect(user).toBeTruthy();
         expect(user.username).toEqual("jgrindall");
         userIdCreated = user.id;
@@ -67,6 +66,13 @@ describe("Test orders store", ()=>{
         const orders:Order[] = await orderStore.index();
         expect(orders).toBeTruthy();
         expect(orders.length).toEqual(1);
+
+        const orders2:Order[] = await orderStore.getOrdersForUser(userIdCreated);
+        expect(orders2).toBeTruthy();
+        expect(orders2.length).toEqual(1);
+
+        expect(orders[0].id).toEqual(orders2[0].id);
+
     });
 
     it("list products", async ()=>{
@@ -89,11 +95,51 @@ describe("Test orders store", ()=>{
 
     });
 
-    xit("list products", async ()=>{
+    it("list products", async ()=>{
         const products:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
         expect(products).toBeTruthy();
         expect(products.length).toEqual(3);
     });
+
+    it("delete an order and associated data", async()=>{
+        // when an order is deleted all linked data should be deleted
+        const products:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
+        expect(products.length).toEqual(3);
+        await orderStore.deleteOrder(orderIdCreated);
+        const products2:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
+        expect(products2.length).toEqual(0);
+        const orders2:Order[] = await orderStore.getOrdersForUser(userIdCreated);
+        expect(orders2.length).toEqual(0);
+    });
+
+    it("delete a user and associated data", async()=>{
+        // when a user is deleted all orders should be deleted
+        const o1:Order = await orderStore.create("active", userIdCreated);
+        orderIdCreated = o1.id;
+
+        const orders2:Order[] = await orderStore.getOrdersForUser(userIdCreated);
+        expect(orders2.length).toEqual(1);
+
+        const product1:{id:number} = await orderStore.addProductToOrder(10, orderIdCreated, productIdsCreated[0]);
+        const product2:{id:number} = await orderStore.addProductToOrder(6, orderIdCreated, productIdsCreated[1]);
+        const product3:{id:number} = await orderStore.addProductToOrder(3, orderIdCreated, productIdsCreated[2]);
+
+        const products:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
+        expect(products).toBeTruthy();
+        expect(products.length).toEqual(3);
+
+        // when a user is deleted all linked data should be deleted
+
+        await userStore.delete(userIdCreated);
+        const orders3:Order[] = await orderStore.getOrdersForUser(userIdCreated);
+        expect(orders3.length).toEqual(0);
+
+        const products2:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
+        expect(products2).toBeTruthy();
+        expect(products2.length).toEqual(0);
+
+    });
+
 
 });
 

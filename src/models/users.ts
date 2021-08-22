@@ -55,7 +55,6 @@ export class UsersStore{
     }
 
     async deleteAll():Promise<Users[]>{
-        console.log('delete all users');
         try{
             const connection = await client.connect();
             const sql = 'delete from users returning *';

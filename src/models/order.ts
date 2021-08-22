@@ -50,6 +50,32 @@ export class OrderStore{
         }
     }
 
+    async deleteOrder(order_id: number):Promise<Order>{
+        try {
+            const connection = await client.connect();
+            const sql = 'delete from orders where id = $1';
+            const result = await connection.query(sql, [order_id]);
+            connection.release();
+            return result.rows[0];
+        }
+        catch (err) {
+            throw new Error(`Could not delete order. Error: ${err}`)
+        }
+    }
+
+    async getOrdersForUser(user_id:number):Promise<Order[]>{
+        try {
+            const sql = 'select * from orders where user_id = $1';
+            const connection = await client.connect();
+            const result = await connection.query(sql, [user_id]);
+            await connection.release();
+            return result.rows;
+        }
+        catch (err) {
+            throw new Error(`Could not get orders. Error: ${err}`)
+        }
+    }
+
     async addProductToOrder(quantity:number, order_id:number, product_id:number): Promise<{id:number}>{
         try {
             const sql = 'insert into order_products (quantity, order_id, product_id) values($1, $2, $3) returning id';
@@ -70,32 +96,6 @@ export class OrderStore{
             const result = await connection.query(sql, [order_id]);
             await connection.release();
             return result.rows;
-        }
-        catch (err) {
-            throw new Error(`Could not get products for order. Error: ${err}`)
-        }
-    }
-
-    async deleteAllOrders():Promise<Order[]>{
-        try {
-            const sql = 'delete from orders returning *';
-            const connection = await client.connect();
-            const result = await connection.query(sql);
-            await connection.release();
-            return result.rows
-        }
-        catch (err) {
-            throw new Error(`Could not get products for order. Error: ${err}`)
-        }
-    }
-
-    async deleteOrdersForUser(user_id:number):Promise<Order[]>{
-        try {
-            const sql = 'delete from orders where user_id = $1 returning *';
-            const connection = await client.connect();
-            const result = await connection.query(sql, [user_id]);
-            await connection.release();
-            return result.rows
         }
         catch (err) {
             throw new Error(`Could not get products for order. Error: ${err}`)
