@@ -1,5 +1,6 @@
 import client from "../database";
 import bcrypt from "bcrypt";
+import {OrderStore} from "./order";
 
 export type Users = {
     id: number;
@@ -50,6 +51,20 @@ export class UsersStore{
         }
         catch(e){
             throw new Error("del user error " + e.message);
+        }
+    }
+
+    async deleteAll():Promise<Users[]>{
+        console.log('delete all users');
+        try{
+            const connection = await client.connect();
+            const sql = 'delete from users returning *';
+            const result = await connection.query(sql);
+            await connection.release();
+            return result.rows;
+        }
+        catch(e){
+            throw new Error("del users error " + e.message);
         }
     }
 

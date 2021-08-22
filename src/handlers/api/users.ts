@@ -32,7 +32,7 @@ export default express
         const user = await store.authenticate(body.username, body.password);
         if(user){
             const token = jwt.sign({user:user}, JWT_TOKEN_SECRET);
-            console.log(token);
+            //console.log(token);
             res
                 .status(200)
                 .header("")

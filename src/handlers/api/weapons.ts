@@ -1,9 +1,6 @@
 import express from "express";
 import {MythicalWeapon, MythicalWeaponStore} from "../../models/mythical_weapons";
-import jwt from "jsonwebtoken";
 import verifyAuth from "../middleware/auth";
-
-const JWT_TOKEN_SECRET:string = process.env.JWT_TOKEN_SECRET as string;
 
 const store = new MythicalWeaponStore();
 

@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import app from "../../src/server";
 import {Users} from "../../src/models/users";
-import jwt, {JwtPayload} from "jsonwebtoken";
 
 const request = supertest(app);
 
@@ -46,9 +45,7 @@ describe("Test endpoint success", async () => {
         expect(response.status).toBe(200);
         expect(response.body).toBeTruthy();
         const user2:Users = response.body as Users;
-        const auth = response.headers["Authorization"];
-        console.log(auth);
-        console.log(response.headers);
+        //const auth = response.headers["Authorization"];
         //const decoded:JwtPayload = jwt.decode(token) as JwtPayload;
         //expect(decoded).toBeTruthy();
         //expect(decoded['user']).toBeTruthy();
