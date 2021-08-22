@@ -25,6 +25,9 @@ describe("Test users store", ()=>{
         expect(user.username).toEqual("jgrindall");
         expect(user.password_digest).not.toEqual("Mountain101");
         idCreated = user.id;
+
+        const ids:{id:number}[] = await store.getWithOrders();
+        expect(ids).toEqual([]);
     });
 
     it("auth works - success", async ()=>{

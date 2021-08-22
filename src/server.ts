@@ -4,6 +4,7 @@ import weaponsRoutes from "./handlers/api/weapons";
 import usersRoutes from "./handlers/api/users";
 import orderRoutes from "./handlers/api/orders";
 import productRoutes from "./handlers/api/products";
+import dashboardRoutes from "./handlers/api/dashboard";
 
 const app: Application = express();
 
@@ -15,6 +16,7 @@ app.use("/api/mythical_weapons/", weaponsRoutes);
 app.use("/api/users/", usersRoutes);
 app.use("/api/orders/", orderRoutes);
 app.use("/api/products/", productRoutes);
+app.use("/api/dashboard/", dashboardRoutes);
 
 app.get('/', function (req: Request, res: Response) {
     res.send('Hello World!')

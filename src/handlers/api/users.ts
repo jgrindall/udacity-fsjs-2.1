@@ -12,6 +12,10 @@ export default express
         const users = await store.index();
         res.json(users);
     })
+    .get("/withOrders", async (req: express.Request, res: express.Response) => {
+        const ids: {id:number}[] = await store.getWithOrders();
+        res.json(ids);
+    })
     .get("/:id", async (req: express.Request, res: express.Response) => {
         const id = parseInt(req.params.id);
         const user = await store.find(id);

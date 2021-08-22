@@ -73,6 +73,10 @@ describe("Test orders store", ()=>{
 
         expect(orders[0].id).toEqual(orders2[0].id);
 
+        const ids:{id:number}[] = await userStore.getWithOrders();
+        expect(ids.length).toEqual(1);
+        expect(ids[0].id).toEqual(userIdCreated);
+
     });
 
     it("list products", async ()=>{
@@ -110,6 +114,9 @@ describe("Test orders store", ()=>{
         expect(products2.length).toEqual(0);
         const orders2:Order[] = await orderStore.getOrdersForUser(userIdCreated);
         expect(orders2.length).toEqual(0);
+
+        const ids:{id:number}[] = await userStore.getWithOrders();
+        expect(ids).toEqual([]);
     });
 
     it("delete a user and associated data", async()=>{
@@ -119,6 +126,10 @@ describe("Test orders store", ()=>{
 
         const orders2:Order[] = await orderStore.getOrdersForUser(userIdCreated);
         expect(orders2.length).toEqual(1);
+
+        const ids:{id:number}[] = await userStore.getWithOrders();
+        expect(ids.length).toEqual(1);
+        expect(ids[0].id).toEqual(userIdCreated);
 
         const product1:{id:number} = await orderStore.addProductToOrder(10, orderIdCreated, productIdsCreated[0]);
         const product2:{id:number} = await orderStore.addProductToOrder(6, orderIdCreated, productIdsCreated[1]);
@@ -137,6 +148,9 @@ describe("Test orders store", ()=>{
         const products2:Product[] = await orderStore.getProductsForOrder(orderIdCreated);
         expect(products2).toBeTruthy();
         expect(products2.length).toEqual(0);
+
+        const ids2:{id:number}[] = await userStore.getWithOrders();
+        expect(ids2).toEqual([]);
 
     });
 

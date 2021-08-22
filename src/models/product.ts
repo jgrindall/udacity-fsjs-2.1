@@ -10,6 +10,20 @@ export class ProductStore{
     constructor() {
 
     }
+
+    async deleteAll(): Promise<Product[]> {
+        try {
+            const connection = await client.connect();
+            const sql = 'delete from products';
+            const result = await connection.query(sql);
+            connection.release();
+            return result.rows;
+        }
+        catch (err) {
+            throw new Error(`Could not del all products. Error: ${err}`)
+        }
+    }
+
     async index(): Promise<Product[]> {
         try {
             const connection = await client.connect();

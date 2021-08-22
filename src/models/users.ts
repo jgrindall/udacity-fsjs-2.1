@@ -1,6 +1,5 @@
 import client from "../database";
 import bcrypt from "bcrypt";
-import {OrderStore} from "./order";
 
 export type Users = {
     id: number;
@@ -82,6 +81,19 @@ export class UsersStore{
         }
         catch (err) {
             throw new Error(`Could not add new user. Error: ${err}`)
+        }
+    }
+
+    async getWithOrders():Promise<{id:number}[]>{
+        try {
+            const sql = 'select u.id from users u inner join orders o on u.id = o.user_id';
+            const connection = await client.connect();
+            const result = await connection.query(sql);
+            await connection.release();
+            return result.rows;
+        }
+        catch (err) {
+            throw new Error(`Could not get with orders Error: ${err}`)
         }
     }
 
